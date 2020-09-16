@@ -16,8 +16,7 @@ void motor_init(void) {
     servo1.write(7);
     servo2.write(163);
     servo3.write(25);
-    int i;
-    for (i = 50; i < 120; i++) {
+    for (int i = 50; i < 120; i++) {
         servo4.write(i);
         servo5.write(i);
         delay(20);
@@ -96,4 +95,77 @@ void taskRotate(void *pvParameters) {
         vTaskDelay(5 / portTICK_PERIOD_MS);
     }
     vTaskDelete(NULL);
+}
+
+//换药步进电机推出
+void taskPushBoxOut(void *pvParameters) {
+    //TODO
+    stepper3.runToNewPosition(64000);
+}
+//换药步进电机拉入
+void taskPullBoxIn(void *pvParameters) {
+    //TODO
+    stepper3.runToNewPosition(0);
+}
+
+void taskOpenBox(void *pvParameters) {
+    //TODO
+    int i;
+    for (i = 50; i < 120; i++) {
+        servo4.write(170 - i);
+        servo5.write(170 - i);
+        delay(20);
+    }
+    servo6.write(180);
+    delay(600);
+    servo6.write(91);
+    for (i = 50; i < 120; i++) {
+        servo4.write(i);
+        servo5.write(i);
+        delay(20);
+    }
+}
+void taskCloseBox(void *pvParameters) {
+    //TODO
+    int i;
+    for (i = 50; i < 120; i++) {
+        servo4.write(170 - i);
+        servo5.write(170 - i);
+        delay(20);
+    }
+    servo6.write(0);
+    delay(800);
+    servo6.write(91);
+    for (i = 50; i < 120; i++) {
+        servo4.write(i);
+        servo5.write(i);
+        delay(20);
+    }
+}
+
+//翻台舵机
+void taskPillsUp(void *pvParameters) {
+    //TODO
+    servo3.write(25);
+}
+void taskPillsDown(void *pvParameters) {
+    //TODO
+    servo3.write(60);
+}
+
+//出药翻板
+void taskPillsOut(void *pvParameters) {
+    //TODO
+    int i;
+    for (i = 7; i <= 140; i++) {
+        servo1.write(i);
+        servo2.write(170 - i);
+        delay(10);
+    }
+    delay(3000);
+    for (i = 140; i >= 7; i--) {
+        servo1.write(i);
+        servo2.write(170 - i);
+        delay(10);
+    }
 }

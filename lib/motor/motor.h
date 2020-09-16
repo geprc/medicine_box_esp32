@@ -62,7 +62,22 @@ void taskRightToMid(void *pvParameters);
 void taskRotate(void *pvParameters);
 
 //换药步进电机
-void taskOut(void *pvParameters);
-void taskIn(void *pvParameters);
+void taskPushBoxOut(void *pvParameters);
+void taskPullBoxIn(void *pvParameters);
+
+/**
+ * 舵机控制函数
+ * 
+ */
+//开盖模块舵机
+void taskOpenBox(void *pvParameters);
+void taskCloseBox(void *pvParameters);
+
+//翻台舵机
+void taskPillsUp(void *pvParameters);
+void taskPillsDown(void *pvParameters);
+
+//出药翻板
+void taskPillsOut(void *pvParameters);
 
 #endif
