@@ -40,14 +40,34 @@ void motor_init(void) {
         delayMicroseconds(200);
     }
 }
+void stepper2Return() {
+    digitalWrite(PIN_STEPPER2_DIR, HIGH);
+    while(digitalRead(PIN_CLICK)) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delayMicroseconds(100);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delayMicroseconds(100);
+    }
+    digitalWrite(PIN_STEPPER2_DIR, LOW);
+    while (!digitalRead(PIN_CLICK)) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delayMicroseconds(200);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delayMicroseconds(200);
+    }
+}
 void taskMidToLeft(void *pvParameters) {
-
+    //TODO
 }
 void taskLeftToMid(void *pvParameters) {
-    
+    //TODO
 }
-void taskMidToRight(void *pvParameters) {}
-void taskRightToMid(void *pvParameters) {}
+void taskMidToRight(void *pvParameters) {
+    //TODO
+}
+void taskRightToMid(void *pvParameters) {
+    //TODO
+}
 
 void taskRotate(void *pvParameters) {
     int direction = (int)pvParameters;

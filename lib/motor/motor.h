@@ -18,7 +18,7 @@
 #define PIN_STEPPER3_DIR     4 //药盒加药步进电机方向
 #define PIN_STEPPER3_STEP    0 //药盒加药步进电机控制
 #define PIN_PUMP             5 //气泵控制
-#define PIN_X               18 //X
+#define PIN_CLICK           18 //取药步进电机复位
 #define PIN_Y               23 //Y
 #define PIN_Z               19 //Z
 #define RIGHT             0x00 //分药步进电机顺时针旋转
@@ -52,6 +52,7 @@ void flyblock(void);
  * 步进电机控制函数（多线程）
 */
 //取药步进电机
+void stepper2Return();
 void taskMidToLeft(void *pvParameters);
 void taskLeftToMid(void *pvParameters);
 void taskMidToRight(void *pvParameters);
