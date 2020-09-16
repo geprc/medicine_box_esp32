@@ -10,8 +10,6 @@ TaskHandle_t taskGreenLEDHandler;
 void taskPrint(void *pvParameters);
 void taskGreenLED(void *pvParameters);
 void taskServo1Test(void *pvParameters);
-void taskServo2Test(void *pvParameters);
-void taskServo3Test(void *pvParameters);
 void taskMidtoLeft(void *pvParameters);
 void taskMidtoRight(void *pvParameters);
 
@@ -28,8 +26,6 @@ void setup() {
     xTaskCreate(taskPrint, "taskPrint", 1000, NULL, 1, NULL);
     xTaskCreate(taskGreenLED, "greenLED", 1000, NULL, 1, &taskGreenLEDHandler);
     xTaskCreate(taskServo1Test, "taskServo1Test", 1000, NULL, 1, NULL);
-    xTaskCreate(taskServo2Test, "taskServo2Test", 1000, NULL, 1, NULL);
-    xTaskCreate(taskServo3Test, "taskServo3Test", 1000, NULL, 1, NULL);
 }
 
 void loop() {
@@ -65,47 +61,14 @@ void taskGreenLED(void *pvParameters) {
     }
 }
 void taskServo1Test(void *pvParameters) {
-    // while (1) {
-    //     servo1.write(90);
-    //     Serial.println("servo1 90 deg");
-    //     vTaskDelay(3000 / portTICK_PERIOD_MS);
-    //     servo1.write(0);
-    //     Serial.println("servo1  0 deg");
-    //     vTaskDelay(3000 / portTICK_PERIOD_MS);
-    // }
-    for (int i = 20; i<=150; i++) {
-        servo1.write(i);
-        vTaskDelay(20 / portTICK_PERIOD_MS);
+    while (1) {
+        for (int i = 20; i <= 150; i++) {
+            servo1.write(i);
+            vTaskDelay(20 / portTICK_PERIOD_MS);
+        }
+        for (int i = 150; i >= 20; i--) {
+            servo1.write(i);
+            vTaskDelay(20 / portTICK_PERIOD_MS);
+        }
     }
-    vTaskDelete(NULL);
-}
-void taskServo2Test(void *pvParameters) {
-    // while (1) {
-    //     servo2.write(150);
-    //     Serial.println("servo1 90 deg");
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    //     servo2.write(20);
-    //     Serial.println("servo1  0 deg");
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    // }
-    for (int i = 20; i<=150; i++) {
-        servo4.write(i);
-        vTaskDelay(10 / portTICK_PERIOD_MS);
-    }
-    vTaskDelete(NULL);
-}
-void taskServo3Test(void *pvParameters) {
-    // while (1) {
-    //     servo2.write(150);
-    //     Serial.println("servo1 90 deg");
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    //     servo2.write(20);
-    //     Serial.println("servo1  0 deg");
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    // }
-    for (int i = 20; i<=150; i++) {
-        servo3.write(i);
-        vTaskDelay(40 / portTICK_PERIOD_MS);
-    }
-    vTaskDelete(NULL);
 }
