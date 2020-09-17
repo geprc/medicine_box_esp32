@@ -34,20 +34,6 @@ AccelStepper stepper2(1, PIN_STEPPER2_STEP, PIN_STEPPER2_DIR);  //取药机构�
 AccelStepper stepper3(1, PIN_STEPPER3_STEP, PIN_STEPPER3_DIR);  //药盒加药步进电机
 
 void motor_init(void);
-void stepper1_reset(void);
-void open_pump(void);
-void close_pump(void);
-void go_open(int b);
-void rotate(int direction);
-void open_box(void);
-void take(int num);
-void close_box(void);
-void go_close(void);
-void mode(void);
-void out(void);
-void add_medicine(void);
-void flyblock(void);
-
 /**
  * 步进电机控制函数（多线程）
 */
