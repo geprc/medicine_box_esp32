@@ -162,7 +162,7 @@ void takePills(int boxName, int pillsNumber) {
     taskOpenBox(NULL);
     rotateToTake(boxName);
     stepper2.runToNewPosition(5000);
-        open_pump();
+        openPump();
         stepper2.runToNewPosition(6400);
         // open_pump();
         delay(1000);
@@ -185,7 +185,7 @@ void takePills(int boxName, int pillsNumber) {
         stepper2.setMaxSpeed(2500);
         stepper2.setAcceleration(1500);
         stepper2.runToNewPosition(-20000);
-        close_pump();
+        closePump();
         delay(2000);
         // stepper2.runToNewPosition(0);
 }

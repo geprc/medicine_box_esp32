@@ -67,4 +67,7 @@ void taskPillsDown(void *pvParameters);
 //出药翻板
 void taskPillsOut(void *pvParameters);
 
+void openPump();
+void closePump();
+
 #endif
