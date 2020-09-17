@@ -7,12 +7,14 @@
 #define DEBUG
 
 #define PIN_LED 5
-#define OPEN_POSITION 5
+#define OPEN_POSITION 4
 #define TAKE_POSITION 2
 #define OUT_POSITION 1
 TaskHandle_t taskGreenLEDHandler;
 enum BOXNAME { BOX1 = 1, BOX2, BOX3, BOX4, BOX5, BOX6 };
 int boxdisplacement = 0;
+int pillsParameters[2] = {1, 1};
+void taskSerial(void *pvParameters);
 void taskPrint(void *pvParameters);
 void taskGreenLED(void *pvParameters);
 void taskServo1Test(void *pvParameters);
@@ -21,16 +23,18 @@ void rotateToClose(int boxName);
 void rotateToTake(int boxName);
 void rotateToOut(int boxName);
 void takePills(int boxName, int pillsNumber);
+void taskTakePills(void *pvParameters);
 
 void setup() {
     Serial.begin(115200);
+    delay(1000);
     pinMode(PIN_LED, OUTPUT);
+    // xTaskCreate(taskPrint, "taskPrint", 1000, NULL, 1, NULL);
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
     if (Serial.available()) {
-        char message;
+        char message = ' ';
         message = Serial.read();
         if (message == 'c') {
             vTaskDelete(taskGreenLEDHandler);
@@ -40,23 +44,26 @@ void loop() {
             xTaskCreate(taskGreenLED, "greenLED", 1000, NULL, 1,
                         &taskGreenLEDHandler);
         }
+        if (message == 't') {
+            Serial.println("开始取药过程");
+            xTaskCreate(taskTakePills, "taskTakePills", 10000, pillsParameters,
+                        1, NULL);
+        }
     }
 }
 
 void taskPrint(void *pvParameters) {
-    for (int i = 0; i < 10; i++) {
+    while (1) {
         Serial.println("Hello from task 1");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
-    Serial.println("Ending task 1");
-    vTaskDelete(NULL);
 }
 void taskGreenLED(void *pvParameters) {
     while (1) {
         digitalWrite(PIN_LED, HIGH);
-        vTaskDelay(200 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
         digitalWrite(PIN_LED, LOW);
-        vTaskDelay(200 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 void taskServo1Test(void *pvParameters) {
@@ -76,17 +83,23 @@ void rotateToOpen(int boxName) {
     int targetRotation = OPEN_POSITION - currentPosition;
     if (targetRotation >= 0) {
 #ifdef DEBUG
-        Serial.println("rorate right" + targetRotation);
+        Serial.println("rorate right " + String(targetRotation) +
+                       " step to open.");
+        Serial.println("向右旋转 " + String(targetRotation) + " 步以开盖.");
 #endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
+            boxdisplacement++;
         }
     } else {
 #ifdef DEBUG
-        Serial.println("rorate left" + (-targetRotation));
+        Serial.println("rorate left " + String(-targetRotation) +
+                       " step to open.");
+        Serial.println("向左旋转 " + String(-targetRotation) + " 步以开盖.");
 #endif
         for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
+            boxdisplacement--;
         }
     }
 }
@@ -95,17 +108,23 @@ void rotateToClose(int boxName) {
     int targetRotation = OPEN_POSITION - currentPosition;
     if (targetRotation >= 0) {
 #ifdef DEBUG
-        Serial.println("rorate right" + targetRotation);
+        Serial.println("rorate right " + String(targetRotation) +
+                       " step to close.");
+        Serial.println("向右旋转 " + String(targetRotation) + " 步以关盖.");
 #endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
+            boxdisplacement++;
         }
     } else {
 #ifdef DEBUG
-        Serial.println("rorate left" + (-targetRotation));
+        Serial.println("rorate right " + String(-targetRotation) +
+                       " step to close.");
+        Serial.println("向左旋转 " + String(-targetRotation) + " 步以关盖.");
 #endif
         for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
+            boxdisplacement--;
         }
     }
 }
@@ -114,17 +133,23 @@ void rotateToTake(int boxName) {
     int targetRotation = TAKE_POSITION - currentPosition;
     if (targetRotation >= 0) {
 #ifdef DEBUG
-        Serial.println("rorate right" + targetRotation);
+        Serial.println("rorate right " + String(targetRotation) +
+                       " step to take pills.");
+        Serial.println("向右旋转 " + String(targetRotation) + " 步以取药.");
 #endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
+            boxdisplacement++;
         }
     } else {
 #ifdef DEBUG
-        Serial.println("rorate left" + (-targetRotation));
+        Serial.println("rorate right " + String(-targetRotation) +
+                       " step to take pills.");
+        Serial.println("向左旋转 " + String(-targetRotation) + " 步以取药.");
 #endif
         for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
+            boxdisplacement--;
         }
     }
 }
@@ -133,17 +158,24 @@ void rotateToOut(int boxName) {
     int targetRotation = OUT_POSITION - currentPosition;
     if (targetRotation >= 0) {
 #ifdef DEBUG
-        Serial.println("rorate right" + targetRotation);
+        Serial.println("rorate right " + String(targetRotation) +
+                       " step to add pills.");
+        Serial.println("向右旋转 " + String(targetRotation) + " 步以换(加)药.");
 #endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
+            boxdisplacement++;
         }
     } else {
 #ifdef DEBUG
-        Serial.println("rorate left" + (-targetRotation));
+        Serial.println("rorate right " + String(-targetRotation) +
+                       " step to add pills.");
+        Serial.println("向左旋转 " + String(-targetRotation) +
+                       " 步以换(加)药.");
 #endif
         for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
+            boxdisplacement--;
         }
     }
 }
@@ -152,9 +184,9 @@ void takePills(int boxName, int pillsNumber) {
     rotateToOpen(boxName);
     taskOpenBox(NULL);
     rotateToTake(boxName);
-    stepper2.runToNewPosition(5000);
+    // stepper2.runToNewPosition(5000);
     openPump();
-    stepper2.runToNewPosition(6400);
+    // stepper2.runToNewPosition(6400);
     delay(1000);
     digitalWrite(PIN_STEPPER2_DIR, LOW);
     for (int i = 0; i < 400; i++) {
@@ -171,11 +203,24 @@ void takePills(int boxName, int pillsNumber) {
         digitalWrite(PIN_STEPPER2_STEP, LOW);
         delayMicroseconds(200);
     }
-
-    stepper2.setMaxSpeed(2500);
-    stepper2.setAcceleration(1500);
-    stepper2.runToNewPosition(-20000);
+#ifdef DEBUG
+    Serial.println("吸到啦！");
+#endif
+    // stepper2.setMaxSpeed(2500);
+    // stepper2.setAcceleration(1500);
+    // stepper2.runToNewPosition(-20000);
     closePump();
     delay(2000);
     taskPillsOut(NULL);
+}
+
+void taskTakePills(void *pvParameters) {
+    int boxName = ((int *)pvParameters)[0];
+    int pillsNumber = ((int *)pvParameters)[1];
+#ifdef DEBUG
+    Serial.println("boxName: " + String(boxName));
+    Serial.println("pillsNumber: " + String(pillsNumber));
+#endif
+    takePills(boxName, pillsNumber);
+    vTaskDelete(NULL);
 }

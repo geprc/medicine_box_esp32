@@ -99,7 +99,7 @@ void taskRotate(int direction) {
         // delayMicroseconds(1400);
         vTaskDelay(5 / portTICK_PERIOD_MS);
     }
-    vTaskDelete(NULL);
+    Serial.println("已旋转一步");
 }
 
 //换药步进电机推出
@@ -115,6 +115,7 @@ void taskPullBoxIn(void *pvParameters) {
 
 void taskOpenBox(void *pvParameters) {
     //TODO
+    Serial.println("openbox...ing");
     int i;
     for (i = 50; i < 120; i++) {
         servo4.write(170 - i);
@@ -161,6 +162,7 @@ void taskPillsDown(void *pvParameters) {
 //出药翻板
 void taskPillsOut(void *pvParameters) {
     //TODO
+    Serial.println("pills out");
     int i;
     for (i = 7; i <= 140; i++) {
         servo1.write(i);
@@ -176,8 +178,10 @@ void taskPillsOut(void *pvParameters) {
 }
 
 void openPump() {
+    Serial.println("open pump");
     digitalWrite(PIN_PUMP, LOW);
 }
 void closePump() {
+    Serial.println("close pump");
     digitalWrite(PIN_PUMP, HIGH);
 }
