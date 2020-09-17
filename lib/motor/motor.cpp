@@ -1,5 +1,15 @@
 #include <motor.h>
 
+Servo servo1;                                                   //小翻台左
+Servo servo2;                                                   //小翻台右
+Servo servo3;                                                   //小翻台中
+Servo servo4;                                                   //开盖舵机左
+Servo servo5;                                                   //开盖舵机右
+Servo servo6;                                                   //开盖舵机
+AccelStepper stepper1(1, PIN_STEPPER1_STEP, PIN_STEPPER1_DIR);  //整体托盘步进电机
+AccelStepper stepper2(1, PIN_STEPPER2_STEP, PIN_STEPPER2_DIR);  //取药机构步进电机
+AccelStepper stepper3(1, PIN_STEPPER3_STEP, PIN_STEPPER3_DIR);  //药盒加药步进电机
+
 void motor_init(void) {
     pinMode(PIN_PUMP, OUTPUT);
     digitalWrite(PIN_PUMP, HIGH);  //拉高关闭气泵电机
@@ -31,14 +41,9 @@ void motor_init(void) {
     stepper3.setMaxSpeed(500);
     stepper3.setAcceleration(100);
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    while (!digitalRead(8)) {
-        digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(200);
-        vTaskDelay(200 / portTICK_PERIOD_MS);
-        digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(200);
-    }
+    stepper2Return();
 }
+//取药步进电机回位
 void stepper2Return() {
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
     while(digitalRead(PIN_CLICK)) {
@@ -168,4 +173,11 @@ void taskPillsOut(void *pvParameters) {
         servo2.write(170 - i);
         delay(10);
     }
+}
+
+void openPump() {
+    digitalWrite(PIN_PUMP, LOW);
+}
+void closePump() {
+    digitalWrite(PIN_PUMP, HIGH);
 }

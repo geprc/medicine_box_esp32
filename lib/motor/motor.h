@@ -23,15 +23,15 @@
 #define PIN_Z               19 //Z
 #define RIGHT             0x00 //分药步进电机顺时针旋转
 #define LEFT              0x01 //分药步进电机逆时针旋转
-Servo servo1;                                                   //小翻台左
-Servo servo2;                                                   //小翻台右
-Servo servo3;                                                   //小翻台中
-Servo servo4;                                                   //开盖舵机左
-Servo servo5;                                                   //开盖舵机右
-Servo servo6;                                                   //开盖舵机
-AccelStepper stepper1(1, PIN_STEPPER1_STEP, PIN_STEPPER1_DIR);  //整体托盘步进电机
-AccelStepper stepper2(1, PIN_STEPPER2_STEP, PIN_STEPPER2_DIR);  //取药机构步进电机
-AccelStepper stepper3(1, PIN_STEPPER3_STEP, PIN_STEPPER3_DIR);  //药盒加药步进电机
+extern Servo servo1;                                                   //小翻台左
+extern Servo servo2;                                                   //小翻台右
+extern Servo servo3;                                                   //小翻台中
+extern Servo servo4;                                                   //开盖舵机左
+extern Servo servo5;                                                   //开盖舵机右
+extern Servo servo6;                                                   //开盖舵机
+extern AccelStepper stepper1;  //整体托盘步进电机
+extern AccelStepper stepper2;  //取药机构步进电机
+extern AccelStepper stepper3;  //药盒加药步进电机
 
 void motor_init(void);
 /**

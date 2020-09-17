@@ -24,17 +24,7 @@ void takePills(int boxName, int pillsNumber);
 
 void setup() {
     Serial.begin(115200);
-    servo1.attach(PIN_SERVO1);
-    servo2.attach(PIN_SERVO2);
-    servo3.attach(PIN_SERVO3);
-    servo4.attach(PIN_SERVO4);
-    servo5.attach(PIN_SERVO5);
-    servo6.attach(PIN_SERVO6);
-    pinMode(5, OUTPUT);
-    // put your setup code here, to run once:
-    xTaskCreate(taskPrint, "taskPrint", 1000, NULL, 1, NULL);
-    xTaskCreate(taskGreenLED, "greenLED", 1000, NULL, 1, &taskGreenLEDHandler);
-    xTaskCreate(taskServo1Test, "taskServo1Test", 1000, NULL, 1, NULL);
+    pinMode(PIN_LED, OUTPUT);
 }
 
 void loop() {
@@ -85,17 +75,17 @@ void rotateToOpen(int boxName) {
     int currentPosition = boxName + boxdisplacement;
     int targetRotation = OPEN_POSITION - currentPosition;
     if (targetRotation >= 0) {
-        #ifdef DEBUG
-            Serial.println("rorate right" + targetRotation);
-        #endif
+#ifdef DEBUG
+        Serial.println("rorate right" + targetRotation);
+#endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
         }
     } else {
-        #ifdef DEBUG
-            Serial.println("rorate left" + (-targetRotation));
-        #endif
-        for(int i = 0; i < -targetRotation; i++){
+#ifdef DEBUG
+        Serial.println("rorate left" + (-targetRotation));
+#endif
+        for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
         }
     }
@@ -104,17 +94,17 @@ void rotateToClose(int boxName) {
     int currentPosition = boxName + boxdisplacement;
     int targetRotation = OPEN_POSITION - currentPosition;
     if (targetRotation >= 0) {
-        #ifdef DEBUG
-            Serial.println("rorate right" + targetRotation);
-        #endif
+#ifdef DEBUG
+        Serial.println("rorate right" + targetRotation);
+#endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
         }
     } else {
-        #ifdef DEBUG
-            Serial.println("rorate left" + (-targetRotation));
-        #endif
-        for(int i = 0; i < -targetRotation; i++){
+#ifdef DEBUG
+        Serial.println("rorate left" + (-targetRotation));
+#endif
+        for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
         }
     }
@@ -123,17 +113,17 @@ void rotateToTake(int boxName) {
     int currentPosition = boxName + boxdisplacement;
     int targetRotation = TAKE_POSITION - currentPosition;
     if (targetRotation >= 0) {
-        #ifdef DEBUG
-            Serial.println("rorate right" + targetRotation);
-        #endif
+#ifdef DEBUG
+        Serial.println("rorate right" + targetRotation);
+#endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
         }
     } else {
-        #ifdef DEBUG
-            Serial.println("rorate left" + (-targetRotation));
-        #endif
-        for(int i = 0; i < -targetRotation; i++){
+#ifdef DEBUG
+        Serial.println("rorate left" + (-targetRotation));
+#endif
+        for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
         }
     }
@@ -142,50 +132,50 @@ void rotateToOut(int boxName) {
     int currentPosition = boxName + boxdisplacement;
     int targetRotation = OUT_POSITION - currentPosition;
     if (targetRotation >= 0) {
-        #ifdef DEBUG
-            Serial.println("rorate right" + targetRotation);
-        #endif
+#ifdef DEBUG
+        Serial.println("rorate right" + targetRotation);
+#endif
         for (int i = 0; i < targetRotation; i++) {
             taskRotate(RIGHT);
         }
     } else {
-        #ifdef DEBUG
-            Serial.println("rorate left" + (-targetRotation));
-        #endif
-        for(int i = 0; i < -targetRotation; i++){
+#ifdef DEBUG
+        Serial.println("rorate left" + (-targetRotation));
+#endif
+        for (int i = 0; i < -targetRotation; i++) {
             taskRotate(LEFT);
         }
     }
 }
 void takePills(int boxName, int pillsNumber) {
+    taskPillsUp(NULL);
     rotateToOpen(boxName);
     taskOpenBox(NULL);
     rotateToTake(boxName);
     stepper2.runToNewPosition(5000);
-        openPump();
-        stepper2.runToNewPosition(6400);
-        // open_pump();
-        delay(1000);
-        digitalWrite(PIN_STEPPER2_DIR, LOW);
-        for (int i = 0; i < 400; i++) {
-            digitalWrite(PIN_STEPPER2_STEP, HIGH);
-            delayMicroseconds(200);
-            digitalWrite(PIN_STEPPER2_STEP, LOW);
-            delayMicroseconds(200);
-        }
-        delay(500);
-        digitalWrite(PIN_STEPPER2_DIR, HIGH);
-        for (int i = 0; i < 400; i++) {
-            digitalWrite(PIN_STEPPER2_STEP, HIGH);
-            delayMicroseconds(200);
-            digitalWrite(PIN_STEPPER2_STEP, LOW);
-            delayMicroseconds(200);
-        }
+    openPump();
+    stepper2.runToNewPosition(6400);
+    delay(1000);
+    digitalWrite(PIN_STEPPER2_DIR, LOW);
+    for (int i = 0; i < 400; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delayMicroseconds(200);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delayMicroseconds(200);
+    }
+    delay(500);
+    digitalWrite(PIN_STEPPER2_DIR, HIGH);
+    for (int i = 0; i < 400; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delayMicroseconds(200);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delayMicroseconds(200);
+    }
 
-        stepper2.setMaxSpeed(2500);
-        stepper2.setAcceleration(1500);
-        stepper2.runToNewPosition(-20000);
-        closePump();
-        delay(2000);
-        // stepper2.runToNewPosition(0);
+    stepper2.setMaxSpeed(2500);
+    stepper2.setAcceleration(1500);
+    stepper2.runToNewPosition(-20000);
+    closePump();
+    delay(2000);
+    taskPillsOut(NULL);
 }
