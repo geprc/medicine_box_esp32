@@ -59,7 +59,8 @@ void taskMidToRight(void *pvParameters);
 void taskRightToMid(void *pvParameters);
 
 //分药步进电机旋转
-void taskRotate(void *pvParameters);
+// void taskRotate(void *pvParameters);
+void taskRotate(int direction);
 
 //换药步进电机
 void taskPushBoxOut(void *pvParameters);

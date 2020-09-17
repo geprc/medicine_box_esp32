@@ -68,8 +68,8 @@ void taskRightToMid(void *pvParameters) {
     //TODO
 }
 
-void taskRotate(void *pvParameters) {
-    int direction = (int)pvParameters;
+void taskRotate(int direction) {
+    // int direction = (int)pvParameters;
     digitalWrite(PIN_STEPPER1_DIR, direction == RIGHT ? HIGH : LOW);
     // for(j=0;j<1000;j++){
     //     digitalWrite(STEPPER1_STEP, LOW);
