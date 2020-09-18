@@ -7,13 +7,15 @@
 #define DEBUG
 
 #define PIN_LED 5
-#define OPEN_POSITION 4
-#define TAKE_POSITION 2
 #define OUT_POSITION 1
-TaskHandle_t taskGreenLEDHandler;
+#define TAKE_POSITION 2
+#define OPEN_POSITION 4
+
 enum BOXNAME { BOX1 = 1, BOX2, BOX3, BOX4, BOX5, BOX6 };
 int boxdisplacement = 0;
 int pillsParameters[2] = {1, 1};
+TaskHandle_t taskGreenLEDHandler;
+
 void taskSerial(void *pvParameters);
 void taskPrint(void *pvParameters);
 void taskGreenLED(void *pvParameters);
