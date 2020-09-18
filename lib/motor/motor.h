@@ -39,8 +39,8 @@ void motor_init(void);
 */
 //取药步进电机
 void stepper2Return();
-void taskMidToLeft(void *pvParameters);
-void taskLeftToMid(void *pvParameters);
+void midToLeft();
+void leftToMid();
 void taskMidToRight(void *pvParameters);
 void taskRightToMid(void *pvParameters);
 

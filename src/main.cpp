@@ -11,9 +11,11 @@
 #define TAKE_POSITION 2
 #define OPEN_POSITION 4
 
-enum BOXNAME { BOX1 = 1, BOX2, BOX3, BOX4, BOX5, BOX6 };
+bool isTaskLED = false;
+bool isTaskTake = false;
 int boxdisplacement = 0;
 int pillsParameters[2] = {1, 1};
+enum BOXNAME { BOX1 = 1, BOX2, BOX3, BOX4, BOX5, BOX6 };
 TaskHandle_t taskGreenLEDHandler;
 
 void taskSerial(void *pvParameters);
@@ -39,17 +41,37 @@ void loop() {
         char message = ' ';
         message = Serial.read();
         if (message == 'c') {
-            vTaskDelete(taskGreenLEDHandler);
-            digitalWrite(PIN_LED, LOW);
+            if (isTaskLED) {
+                vTaskDelete(taskGreenLEDHandler);
+                isTaskLED = false;
+                digitalWrite(PIN_LED, LOW);
+            } else {
+                Serial.println("已经没有LED任务了");
+            }
         }
         if (message == 'o') {
-            xTaskCreate(taskGreenLED, "greenLED", 1000, NULL, 1,
-                        &taskGreenLEDHandler);
+            if (!isTaskLED) {
+                xTaskCreate(taskGreenLED, "greenLED", 1000, NULL, 1,
+                            &taskGreenLEDHandler);
+                isTaskLED = true;
+            } else {
+                Serial.println("已经有一个LED任务了");
+            }
         }
         if (message == 't') {
-            Serial.println("开始取药过程");
-            xTaskCreate(taskTakePills, "taskTakePills", 10000, pillsParameters,
-                        1, NULL);
+            if (!isTaskTake) {
+                isTaskTake = true;
+                Serial.println("开始取药过程");
+                xTaskCreate(taskTakePills, "taskTakePills", 10000,
+                pillsParameters,
+                            1, NULL);
+                // Serial.println("开始推出药盒");
+                // taskPushBoxOut(NULL);
+                // Serial.println("开始推入药盒");
+                // taskPullBoxIn(NULL);
+            } else {
+                Serial.println("已经有一个取药任务了");
+            }
         }
     }
 }
@@ -187,6 +209,7 @@ void takePills(int boxName, int pillsNumber) {
     taskOpenBox(NULL);
     rotateToTake(boxName);
     // stepper2.runToNewPosition(5000);
+    midToLeft();
     openPump();
     // stepper2.runToNewPosition(6400);
     delay(1000);
@@ -211,9 +234,12 @@ void takePills(int boxName, int pillsNumber) {
     // stepper2.setMaxSpeed(2500);
     // stepper2.setAcceleration(1500);
     // stepper2.runToNewPosition(-20000);
+    leftToMid();
+    taskMidToRight(NULL);
     closePump();
     delay(2000);
     taskPillsOut(NULL);
+    isTaskTake = false;
 }
 
 void taskTakePills(void *pvParameters) {

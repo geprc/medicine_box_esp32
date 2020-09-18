@@ -60,17 +60,49 @@ void stepper2Return() {
         delayMicroseconds(200);
     }
 }
-void taskMidToLeft(void *pvParameters) {
+void midToLeft() {
     //TODO
+    Serial.println("中到左...");
+    digitalWrite(PIN_STEPPER2_DIR, HIGH);
+    for(int i=0; i<=5000; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delay(2);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delay(2);
+    }
 }
-void taskLeftToMid(void *pvParameters) {
+void leftToMid() {
     //TODO
+    Serial.println("左到中...");
+    digitalWrite(PIN_STEPPER2_DIR, LOW);
+    for(int i=0; i<=5000; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delay(2);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delay(2);
+    }
 }
 void taskMidToRight(void *pvParameters) {
     //TODO
+    Serial.println("中到右...");
+    digitalWrite(PIN_STEPPER2_DIR, LOW);
+    for(int i=0; i<=5000; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delay(2);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delay(2);
+    }
 }
 void taskRightToMid(void *pvParameters) {
     //TODO
+    Serial.println("右到中...");
+    digitalWrite(PIN_STEPPER2_DIR, HIGH);
+    for(int i=0; i<=5000; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delay(2);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delay(2);
+    }
 }
 
 void taskRotate(int direction) {
@@ -92,12 +124,12 @@ void taskRotate(int direction) {
     //     delayMicroseconds(abs(i-2050)*100i0/i2050+300);
     // }
     //两分频
-    for (int i = 0; i < 400; i++) {
+    for (int i = 0; i < 800; i++) {
         digitalWrite(PIN_STEPPER1_STEP, LOW);
         vTaskDelay(5 / portTICK_PERIOD_MS);
         digitalWrite(PIN_STEPPER1_STEP, HIGH);
         // delayMicroseconds(1400);
-        vTaskDelay(5 / portTICK_PERIOD_MS);
+        vTaskDelay(2 / portTICK_PERIOD_MS);
     }
     Serial.println("已旋转一步");
 }
@@ -105,12 +137,24 @@ void taskRotate(int direction) {
 //换药步进电机推出
 void taskPushBoxOut(void *pvParameters) {
     //TODO
-    stepper3.runToNewPosition(64000);
+    digitalWrite(PIN_STEPPER3_DIR, HIGH);
+    for(int i=0; i<=10000; i++) {
+        digitalWrite(PIN_STEPPER3_STEP, HIGH);
+        delay(1);
+        digitalWrite(PIN_STEPPER3_STEP, LOW);
+        delay(1);
+    }
 }
 //换药步进电机拉入
 void taskPullBoxIn(void *pvParameters) {
     //TODO
-    stepper3.runToNewPosition(0);
+    digitalWrite(PIN_STEPPER3_DIR, LOW);
+    for(int i=0; i<=10000; i++) {
+        digitalWrite(PIN_STEPPER3_STEP, HIGH);
+        delay(1);
+        digitalWrite(PIN_STEPPER3_STEP, LOW);
+        delay(1);
+    }
 }
 
 void taskOpenBox(void *pvParameters) {
