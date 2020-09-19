@@ -45,20 +45,15 @@ void motor_init(void) {
 }
 //取药步进电机回位
 void stepper2Return() {
+    Serial.println("正在归位");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    while(digitalRead(PIN_CLICK)) {
+    while(!digitalRead(PIN_CLICK)) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(100);
+        delayMicroseconds(300);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(100);
+        delayMicroseconds(300);
     }
-    digitalWrite(PIN_STEPPER2_DIR, LOW);
-    while (!digitalRead(PIN_CLICK)) {
-        digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(200);
-        digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(200);
-    }
+    Serial.println("已归位");
 }
 void midToLeft() {
     //TODO
@@ -77,9 +72,9 @@ void leftToMid() {
     digitalWrite(PIN_STEPPER2_DIR, LOW);
     for(int i=0; i<=5000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delay(2);
+        delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delay(2);
+        delayMicroseconds(200);
     }
 }
 void taskMidToRight(void *pvParameters) {
@@ -88,9 +83,9 @@ void taskMidToRight(void *pvParameters) {
     digitalWrite(PIN_STEPPER2_DIR, LOW);
     for(int i=0; i<=5000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delay(2);
+        delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delay(2);
+        delayMicroseconds(200);
     }
 }
 void taskRightToMid(void *pvParameters) {
@@ -99,9 +94,9 @@ void taskRightToMid(void *pvParameters) {
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
     for(int i=0; i<=5000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delay(2);
+        delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delay(2);
+        delayMicroseconds(200);
     }
 }
 
@@ -124,12 +119,12 @@ void taskRotate(int direction) {
     //     delayMicroseconds(abs(i-2050)*100i0/i2050+300);
     // }
     //两分频
-    for (int i = 0; i < 800; i++) {
+    for (int i = 0; i < 1600; i++) {
         digitalWrite(PIN_STEPPER1_STEP, LOW);
-        vTaskDelay(5 / portTICK_PERIOD_MS);
+        vTaskDelay(4 / portTICK_PERIOD_MS);
         digitalWrite(PIN_STEPPER1_STEP, HIGH);
         // delayMicroseconds(1400);
-        vTaskDelay(2 / portTICK_PERIOD_MS);
+        vTaskDelay(4 / portTICK_PERIOD_MS);
     }
     Serial.println("已旋转一步");
 }
