@@ -33,6 +33,7 @@ void setup() {
     Serial.begin(115200);
     delay(1000);
     pinMode(PIN_LED, OUTPUT);
+    motor_init();
     // xTaskCreate(taskPrint, "taskPrint", 1000, NULL, 1, NULL);
 }
 
@@ -224,9 +225,9 @@ void takePills(int boxName, int pillsNumber) {
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
     for (int i = 0; i < 400; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(200);
+        delayMicroseconds(400);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(200);
+        delayMicroseconds(400);
     }
 #ifdef DEBUG
     Serial.println("吸到啦！");
