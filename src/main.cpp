@@ -9,7 +9,7 @@
 #define PIN_LED 5
 #define OUT_POSITION 1
 #define TAKE_POSITION 2
-#define OPEN_POSITION 4
+#define OPEN_POSITION 5
 
 bool isTaskLED = false;
 bool isTaskTake = false;
@@ -62,14 +62,16 @@ void loop() {
         if (message == 't') {
             if (!isTaskTake) {
                 isTaskTake = true;
-                Serial.println("开始取药过程");
-                xTaskCreate(taskTakePills, "taskTakePills", 10000,
-                pillsParameters,
-                            1, NULL);
+                Serial.println("*************\n*开始取药过程*\n*************");
+                // xTaskCreate(taskTakePills, "taskTakePills", 10000,
+                //             pillsParameters, 1, NULL);
                 // Serial.println("开始推出药盒");
                 // taskPushBoxOut(NULL);
                 // Serial.println("开始推入药盒");
                 // taskPullBoxIn(NULL);
+                taskOpenBox(NULL);
+                delay(2000);
+                taskCloseBox(NULL);
             } else {
                 Serial.println("已经有一个取药任务了");
             }

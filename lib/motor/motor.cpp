@@ -33,7 +33,7 @@ void motor_init(void) {
     }
     servo4.write(120);
     servo5.write(120);
-    servo6.write(91);
+    servo6.write(0);
     stepper1.setMaxSpeed(1000);
     stepper1.setAcceleration(500);
     stepper2.setMaxSpeed(1500);
@@ -121,10 +121,10 @@ void taskRotate(int direction) {
     //两分频
     for (int i = 0; i < 1600; i++) {
         digitalWrite(PIN_STEPPER1_STEP, LOW);
-        vTaskDelay(4 / portTICK_PERIOD_MS);
+        vTaskDelay(3 / portTICK_PERIOD_MS);
         digitalWrite(PIN_STEPPER1_STEP, HIGH);
         // delayMicroseconds(1400);
-        vTaskDelay(4 / portTICK_PERIOD_MS);
+        vTaskDelay(3 / portTICK_PERIOD_MS);
     }
     Serial.println("已旋转一步");
 }
@@ -161,9 +161,13 @@ void taskOpenBox(void *pvParameters) {
         servo5.write(170 - i);
         delay(20);
     }
+    delay(500);
+    for (i = 0; i <= 180; i++) {
+        servo6.write(i);
+        delay(20);
+    }
+    delay(500);
     servo6.write(180);
-    delay(600);
-    servo6.write(91);
     for (i = 50; i < 120; i++) {
         servo4.write(i);
         servo5.write(i);
@@ -178,9 +182,13 @@ void taskCloseBox(void *pvParameters) {
         servo5.write(170 - i);
         delay(20);
     }
+    delay(500);
+    for (i = 180; i >= 0; i--) {
+        servo6.write(i);
+        delay(20);
+    }
+    delay(500);
     servo6.write(0);
-    delay(800);
-    servo6.write(91);
     for (i = 50; i < 120; i++) {
         servo4.write(i);
         servo5.write(i);
