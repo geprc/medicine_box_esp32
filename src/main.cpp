@@ -63,15 +63,33 @@ void loop() {
             if (!isTaskTake) {
                 isTaskTake = true;
                 Serial.println("*************\n*开始取药过程*\n*************");
-                // xTaskCreate(taskTakePills, "taskTakePills", 10000,
-                //             pillsParameters, 1, NULL);
-                // Serial.println("开始推出药盒");
-                // taskPushBoxOut(NULL);
-                // Serial.println("开始推入药盒");
-                // taskPullBoxIn(NULL);
+                xTaskCreate(taskTakePills, "taskTakePills", 10000,
+                            pillsParameters, 1, NULL);
+
+            } else {
+                Serial.println("已经有一个取药任务了");
+            }
+        }
+        if (message == '1') {
+            if (!isTaskTake) {
+                isTaskTake = true;
                 taskOpenBox(NULL);
                 delay(2000);
                 taskCloseBox(NULL);
+                isTaskTake = false;
+            } else {
+                Serial.println("已经有一个取药任务了");
+            }
+        }
+        if (message == '2') {
+            if (!isTaskTake) {
+                isTaskTake = true;
+                Serial.println("开始推出药盒");
+                taskPushBoxOut(NULL);
+                delay(1000);
+                Serial.println("开始推入药盒");
+                taskPullBoxIn(NULL);
+                isTaskTake = false;
             } else {
                 Serial.println("已经有一个取药任务了");
             }
