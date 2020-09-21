@@ -14,7 +14,7 @@ void motor_init(void) {
     pinMode(PIN_PUMP, OUTPUT);
     pinMode(PIN_ENABLE, OUTPUT);
     pinMode(PIN_AIR, OUTPUT);
-    digitalWrite(PIN_PUMP, HIGH);  //拉高关闭气泵电机
+    digitalWrite(PIN_PUMP, LOW);  //拉高关闭气泵电机
     // TODO 步进电机使能
     digitalWrite(PIN_ENABLE, LOW);
     servo1.attach(PIN_SERVO1);
@@ -25,7 +25,7 @@ void motor_init(void) {
     servo6.attach(PIN_SERVO6);
     servo1.write(25);
     servo2.write(145);
-    servo3.write(25);
+    servo3.write(ANGLE_UP);
     for (int i = 50; i < 120; i++) {
         servo4.write(i);
         servo5.write(i);
@@ -43,6 +43,9 @@ void motor_init(void) {
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
     stepper2Return();
     digitalWrite(PIN_ENABLE, HIGH);
+    servo3.write(ANGLE_DOWN);
+    delay(1000);
+    servo3.write(ANGLE_UP);
 }
 //取药步进电机回位
 void stepper2Return() {
@@ -82,7 +85,7 @@ void taskMidToRight(void *pvParameters) {
     //TODO
     Serial.println("中到右...");
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for(int i=0; i<=5000; i++) {
+    for(int i=0; i<=8000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -93,12 +96,13 @@ void taskRightToMid(void *pvParameters) {
     //TODO
     Serial.println("右到中...");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for(int i=0; i<=5000; i++) {
+    for(int i=0; i<=8000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
         delayMicroseconds(200);
     }
+    vTaskDelete(NULL);
 }
 
 void taskRotate(int direction) {
@@ -200,11 +204,11 @@ void taskCloseBox(void *pvParameters) {
 //翻台舵机
 void taskPillsUp(void *pvParameters) {
     //TODO
-    servo3.write(25);
+    servo3.write(ANGLE_UP);
 }
 void taskPillsDown(void *pvParameters) {
     //TODO
-    servo3.write(60);
+    servo3.write(ANGLE_DOWN);
 }
 
 //出药翻板
@@ -227,9 +231,9 @@ void taskPillsOut(void *pvParameters) {
 
 void openPump() {
     Serial.println("open pump");
-    digitalWrite(PIN_PUMP, LOW);
+    digitalWrite(PIN_PUMP, HIGH);
 }
 void closePump() {
     Serial.println("close pump");
-    digitalWrite(PIN_PUMP, HIGH);
+    digitalWrite(PIN_PUMP, LOW);
 }

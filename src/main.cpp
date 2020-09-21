@@ -38,8 +38,9 @@ void loop() {
             if (!isTaskTake) {
                 isTaskTake = true;
                 Serial.println("*************\n*开始取药过程*\n*************");
-                xTaskCreate(taskTakePills, "taskTakePills", 10000,
-                            pillsParameters, 1, NULL);
+                // xTaskCreate(taskTakePills, "taskTakePills", 20000,
+                            // pillsParameters, 1, NULL);
+                takePills(3, 1);
             } else {
                 Serial.println("已经有一个取药任务了");
             }
@@ -213,8 +214,10 @@ void takePills(int boxName, int pillsNumber) {
     // stepper2.runToNewPosition(-20000);
     leftToMid();
     taskMidToRight(NULL);
+    taskMidToRight(NULL);
     closePump();
-    delay(3000);
+    delay(5000);
+    // xTaskCreate(taskRightToMid, "taskRightToMid", 1000, NULL, 1, NULL);
     taskPillsOut(NULL);
     isTaskTake = false;
     digitalWrite(PIN_ENABLE, HIGH);
