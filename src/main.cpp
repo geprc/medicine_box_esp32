@@ -6,22 +6,16 @@
 
 #define DEBUG
 
-#define PIN_LED 5
 #define OUT_POSITION 1
 #define TAKE_POSITION 2
 #define OPEN_POSITION 5
 
-bool isTaskLED = false;
 bool isTaskTake = false;
 int boxdisplacement = 0;
 int pillsParameters[2] = {1, 1};
 enum BOXNAME { BOX1 = 1, BOX2, BOX3, BOX4, BOX5, BOX6 };
 TaskHandle_t taskGreenLEDHandler;
 
-void taskSerial(void *pvParameters);
-void taskPrint(void *pvParameters);
-void taskGreenLED(void *pvParameters);
-void taskServo1Test(void *pvParameters);
 void rotateToOpen(int boxName);
 void rotateToClose(int boxName);
 void rotateToTake(int boxName);
@@ -32,7 +26,6 @@ void taskTakePills(void *pvParameters);
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    pinMode(PIN_LED, OUTPUT);
     motor_init();
     // xTaskCreate(taskPrint, "taskPrint", 1000, NULL, 1, NULL);
 }
@@ -41,31 +34,12 @@ void loop() {
     if (Serial.available()) {
         char message = ' ';
         message = Serial.read();
-        if (message == 'c') {
-            if (isTaskLED) {
-                vTaskDelete(taskGreenLEDHandler);
-                isTaskLED = false;
-                digitalWrite(PIN_LED, LOW);
-            } else {
-                Serial.println("已经没有LED任务了");
-            }
-        }
-        if (message == 'o') {
-            if (!isTaskLED) {
-                xTaskCreate(taskGreenLED, "greenLED", 1000, NULL, 1,
-                            &taskGreenLEDHandler);
-                isTaskLED = true;
-            } else {
-                Serial.println("已经有一个LED任务了");
-            }
-        }
         if (message == 't') {
             if (!isTaskTake) {
                 isTaskTake = true;
                 Serial.println("*************\n*开始取药过程*\n*************");
                 xTaskCreate(taskTakePills, "taskTakePills", 10000,
                             pillsParameters, 1, NULL);
-
             } else {
                 Serial.println("已经有一个取药任务了");
             }
@@ -73,9 +47,11 @@ void loop() {
         if (message == '1') {
             if (!isTaskTake) {
                 isTaskTake = true;
+                digitalWrite(PIN_ENABLE, LOW);
                 taskOpenBox(NULL);
                 delay(2000);
                 taskCloseBox(NULL);
+                digitalWrite(PIN_ENABLE, HIGH);
                 isTaskTake = false;
             } else {
                 Serial.println("已经有一个取药任务了");
@@ -85,10 +61,12 @@ void loop() {
             if (!isTaskTake) {
                 isTaskTake = true;
                 Serial.println("开始推出药盒");
+                digitalWrite(PIN_ENABLE, LOW);
                 taskPushBoxOut(NULL);
                 delay(1000);
                 Serial.println("开始推入药盒");
                 taskPullBoxIn(NULL);
+                digitalWrite(PIN_ENABLE, HIGH);
                 isTaskTake = false;
             } else {
                 Serial.println("已经有一个取药任务了");
@@ -97,32 +75,6 @@ void loop() {
     }
 }
 
-void taskPrint(void *pvParameters) {
-    while (1) {
-        Serial.println("Hello from task 1");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-}
-void taskGreenLED(void *pvParameters) {
-    while (1) {
-        digitalWrite(PIN_LED, HIGH);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        digitalWrite(PIN_LED, LOW);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-}
-void taskServo1Test(void *pvParameters) {
-    while (1) {
-        for (int i = 20; i <= 150; i++) {
-            servo1.write(i);
-            vTaskDelay(20 / portTICK_PERIOD_MS);
-        }
-        for (int i = 150; i >= 20; i--) {
-            servo1.write(i);
-            vTaskDelay(20 / portTICK_PERIOD_MS);
-        }
-    }
-}
 void rotateToOpen(int boxName) {
     int currentPosition = boxName + boxdisplacement;
     int targetRotation = OPEN_POSITION - currentPosition;
@@ -225,6 +177,7 @@ void rotateToOut(int boxName) {
     }
 }
 void takePills(int boxName, int pillsNumber) {
+    digitalWrite(PIN_ENABLE, LOW);
     taskPillsUp(NULL);
     rotateToOpen(boxName);
     taskOpenBox(NULL);
@@ -261,6 +214,7 @@ void takePills(int boxName, int pillsNumber) {
     delay(2000);
     taskPillsOut(NULL);
     isTaskTake = false;
+    digitalWrite(PIN_ENABLE, HIGH);
 }
 
 void taskTakePills(void *pvParameters) {

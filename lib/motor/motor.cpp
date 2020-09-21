@@ -12,11 +12,11 @@ AccelStepper stepper3(1, PIN_STEPPER3_STEP, PIN_STEPPER3_DIR);  //药盒加药�
 
 void motor_init(void) {
     pinMode(PIN_PUMP, OUTPUT);
+    pinMode(PIN_ENABLE, OUTPUT);
+    pinMode(PIN_AIR, OUTPUT);
     digitalWrite(PIN_PUMP, HIGH);  //拉高关闭气泵电机
-    // pinMode(STEPPER1_EN),OUTPUT);
-    // pinMode(STEPPER2_EN,OUTPUT);
-    // pinMode(STEPPER3_EN,OUTPUT);
     // TODO 步进电机使能
+    digitalWrite(PIN_ENABLE, LOW);
     servo1.attach(PIN_SERVO1);
     servo2.attach(PIN_SERVO2);
     servo3.attach(PIN_SERVO3);
@@ -42,6 +42,7 @@ void motor_init(void) {
     stepper3.setAcceleration(100);
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
     stepper2Return();
+    digitalWrite(PIN_ENABLE, HIGH);
 }
 //取药步进电机回位
 void stepper2Return() {
@@ -133,22 +134,22 @@ void taskRotate(int direction) {
 void taskPushBoxOut(void *pvParameters) {
     //TODO
     digitalWrite(PIN_STEPPER3_DIR, HIGH);
-    for(int i=0; i<=10000; i++) {
+    for(int i=0; i<=15000; i++) {
         digitalWrite(PIN_STEPPER3_STEP, HIGH);
-        delay(1);
+        delayMicroseconds(300);
         digitalWrite(PIN_STEPPER3_STEP, LOW);
-        delay(1);
+        delayMicroseconds(300);
     }
 }
 //换药步进电机拉入
 void taskPullBoxIn(void *pvParameters) {
     //TODO
     digitalWrite(PIN_STEPPER3_DIR, LOW);
-    for(int i=0; i<=10000; i++) {
+    for(int i=0; i<=15000; i++) {
         digitalWrite(PIN_STEPPER3_STEP, HIGH);
-        delay(1);
+        delayMicroseconds(300);
         digitalWrite(PIN_STEPPER3_STEP, LOW);
-        delay(1);
+        delayMicroseconds(300);
     }
 }
 
