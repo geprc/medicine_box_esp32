@@ -23,8 +23,8 @@ void motor_init(void) {
     servo4.attach(PIN_SERVO4);
     servo5.attach(PIN_SERVO5);
     servo6.attach(PIN_SERVO6);
-    servo1.write(7);
-    servo2.write(163);
+    servo1.write(25);
+    servo2.write(145);
     servo3.write(25);
     for (int i = 50; i < 120; i++) {
         servo4.write(i);
@@ -212,13 +212,13 @@ void taskPillsOut(void *pvParameters) {
     //TODO
     Serial.println("pills out");
     int i;
-    for (i = 7; i <= 140; i++) {
+    for (i = 25; i <= 160; i++) {
         servo1.write(i);
         servo2.write(170 - i);
         delay(10);
     }
     delay(3000);
-    for (i = 140; i >= 7; i--) {
+    for (i = 160; i >= 25; i--) {
         servo1.write(i);
         servo2.write(170 - i);
         delay(10);

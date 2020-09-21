@@ -12,7 +12,7 @@
 
 bool isTaskTake = false;
 int boxdisplacement = 0;
-int pillsParameters[2] = {1, 1};
+int pillsParameters[2] = {3, 1};
 enum BOXNAME { BOX1 = 1, BOX2, BOX3, BOX4, BOX5, BOX6 };
 TaskHandle_t taskGreenLEDHandler;
 
@@ -71,6 +71,9 @@ void loop() {
             } else {
                 Serial.println("已经有一个取药任务了");
             }
+        }
+        if (message == '3') {
+            taskPillsOut(NULL);
         }
     }
 }
@@ -211,7 +214,7 @@ void takePills(int boxName, int pillsNumber) {
     leftToMid();
     taskMidToRight(NULL);
     closePump();
-    delay(2000);
+    delay(3000);
     taskPillsOut(NULL);
     isTaskTake = false;
     digitalWrite(PIN_ENABLE, HIGH);
