@@ -45,12 +45,18 @@ void loop() {
                 Serial.println("已经有一个取药任务了");
             }
         }
-        if (message == '1') {
+        if (message == 'i') {//开盖
             if (!isTaskTake) {
                 isTaskTake = true;
-                digitalWrite(PIN_ENABLE, LOW);
                 taskOpenBox(NULL);
-                delay(2000);
+                isTaskTake = false;
+            } else {
+                Serial.println("已经有一个取药任务了");
+            }
+        }
+        if (message == 'j') {//关盖
+            if (!isTaskTake) {
+                isTaskTake = true;
                 taskCloseBox(NULL);
                 digitalWrite(PIN_ENABLE, HIGH);
                 isTaskTake = false;
@@ -58,7 +64,7 @@ void loop() {
                 Serial.println("已经有一个取药任务了");
             }
         }
-        if (message == '2') {
+        if (message == 'k') {
             if (!isTaskTake) {
                 isTaskTake = true;
                 Serial.println("开始推出药盒");
@@ -75,6 +81,12 @@ void loop() {
         }
         if (message == '3') {
             taskPillsOut(NULL);
+        }
+        if (message == 'a') {//开气泵
+            openPump();
+        }
+        if (message == 'b') {//关气泵
+            closePump();
         }
     }
 }
