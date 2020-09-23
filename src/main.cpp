@@ -194,7 +194,7 @@ void rotateToOut(int boxName) {
 }
 void takePills(int boxName, int pillsNumber) {
     digitalWrite(PIN_ENABLE, LOW);
-    taskPillsUp(NULL);
+    // taskPillsUp(NULL);
     rotateToOpen(boxName);
     taskOpenBox(NULL);
     rotateToTake(boxName);
@@ -225,7 +225,6 @@ void takePills(int boxName, int pillsNumber) {
     // stepper2.setAcceleration(1500);
     // stepper2.runToNewPosition(-20000);
     leftToMid();
-    taskMidToRight(NULL);
     taskMidToRight(NULL);
     closePump();
     delay(5000);

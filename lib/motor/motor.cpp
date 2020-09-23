@@ -43,9 +43,9 @@ void motor_init(void) {
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
     stepper2Return();
     digitalWrite(PIN_ENABLE, HIGH);
-    servo3.write(ANGLE_DOWN);
-    delay(1000);
-    servo3.write(ANGLE_UP);
+    // servo3.write(ANGLE_DOWN);
+    // delay(1000);
+    // servo3.write(ANGLE_UP);
 }
 //取药步进电机回位
 void stepper2Return() {
@@ -63,7 +63,7 @@ void midToLeft() {
     //TODO
     Serial.println("中到左...");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for(int i=0; i<=5000; i++) {
+    for(int i=0; i<=4000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delay(2);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -74,7 +74,7 @@ void leftToMid() {
     //TODO
     Serial.println("左到中...");
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for(int i=0; i<=5000; i++) {
+    for(int i=0; i<=4000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -85,7 +85,7 @@ void taskMidToRight(void *pvParameters) {
     //TODO
     Serial.println("中到右...");
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for(int i=0; i<=8000; i++) {
+    for(int i=0; i<=22000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -96,7 +96,7 @@ void taskRightToMid(void *pvParameters) {
     //TODO
     Serial.println("右到中...");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for(int i=0; i<=8000; i++) {
+    for(int i=0; i<=22000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
