@@ -22,7 +22,7 @@ void rotateToTake(int boxName);
 void rotateToOut(int boxName);
 void takePills(int boxName, int pillsNumber);
 void taskTakePills(void *pvParameters);
-
+void takePillsTest();
 void setup() {
     Serial.begin(115200);
     delay(1000);
@@ -58,6 +58,39 @@ void loop() {
             if (!isTaskTake) {
                 isTaskTake = true;
                 taskCloseBox(NULL);
+                digitalWrite(PIN_ENABLE, HIGH);
+                isTaskTake = false;
+            } else {
+                Serial.println("已经有一个取药任务了");
+            }
+        }
+        if (message == 'm') {//关盖
+            if (!isTaskTake) {
+                isTaskTake = true;
+                takePillsTest();
+                isTaskTake = false;
+            } else {
+                Serial.println("已经有一个取药任务了");
+            }
+        }
+        if (message == 'g') {//左旋
+            if (!isTaskTake) {
+                isTaskTake = true;
+                digitalWrite(PIN_ENABLE, LOW);
+                taskRotate(LEFT);
+                boxdisplacement--;
+                digitalWrite(PIN_ENABLE, HIGH);
+                isTaskTake = false;
+            } else {
+                Serial.println("已经有一个取药任务了");
+            }
+        }
+        if (message == 'h') {//右旋
+            if (!isTaskTake) {
+                isTaskTake = true;
+                digitalWrite(PIN_ENABLE, LOW);
+                taskRotate(RIGHT);
+                boxdisplacement++;
                 digitalWrite(PIN_ENABLE, HIGH);
                 isTaskTake = false;
             } else {
@@ -243,4 +276,30 @@ void taskTakePills(void *pvParameters) {
 #endif
     takePills(boxName, pillsNumber);
     vTaskDelete(NULL);
+}
+void takePillsTest() {
+    midToLeft();
+    openPump();
+    // stepper2.runToNewPosition(6400);
+    delay(1000);
+    digitalWrite(PIN_STEPPER2_DIR, LOW);
+    for (int i = 0; i < 400; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delayMicroseconds(200);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delayMicroseconds(200);
+    }
+    delay(500);
+    digitalWrite(PIN_STEPPER2_DIR, HIGH);
+    for (int i = 0; i < 400; i++) {
+        digitalWrite(PIN_STEPPER2_STEP, HIGH);
+        delayMicroseconds(400);
+        digitalWrite(PIN_STEPPER2_STEP, LOW);
+        delayMicroseconds(400);
+    }
+    // stepper2.setMaxSpeed(2500);
+    // stepper2.setAcceleration(1500);
+    // stepper2.runToNewPosition(-20000);
+    leftToMid();
+    closePump();
 }

@@ -14,6 +14,7 @@ void motor_init(void) {
     pinMode(PIN_PUMP, OUTPUT);
     pinMode(PIN_ENABLE, OUTPUT);
     pinMode(PIN_AIR, OUTPUT);
+    pinMode(PIN_CLICK, INPUT_PULLUP);
     digitalWrite(PIN_PUMP, LOW);  //拉高关闭气泵电机
     // TODO 步进电机使能
     digitalWrite(PIN_ENABLE, LOW);
@@ -51,7 +52,8 @@ void motor_init(void) {
 void stepper2Return() {
     Serial.println("正在归位");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    while(!digitalRead(PIN_CLICK)) {
+    while(digitalRead(PIN_CLICK)) {
+        Serial.println(digitalRead(PIN_CLICK));
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(300);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -63,7 +65,7 @@ void midToLeft() {
     //TODO
     Serial.println("中到左...");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for(int i=0; i<=4000; i++) {
+    for(int i=0; i<=4500; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delay(2);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -74,7 +76,7 @@ void leftToMid() {
     //TODO
     Serial.println("左到中...");
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for(int i=0; i<=4000; i++) {
+    for(int i=0; i<=4500; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
