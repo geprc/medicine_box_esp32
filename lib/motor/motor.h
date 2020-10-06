@@ -72,4 +72,7 @@ void taskPillsOut(void *pvParameters);
 void openPump();
 void closePump();
 
+void openAir();
+void closeAir();
+
 #endif

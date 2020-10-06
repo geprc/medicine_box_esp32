@@ -39,13 +39,13 @@ void loop() {
                 isTaskTake = true;
                 Serial.println("*************\n*开始取药过程*\n*************");
                 // xTaskCreate(taskTakePills, "taskTakePills", 20000,
-                            // pillsParameters, 1, NULL);
+                // pillsParameters, 1, NULL);
                 takePills(3, 1);
             } else {
                 Serial.println("已经有一个取药任务了");
             }
         }
-        if (message == 'i') {//开盖
+        if (message == 'i') {  //开盖
             if (!isTaskTake) {
                 isTaskTake = true;
                 taskOpenBox(NULL);
@@ -54,7 +54,7 @@ void loop() {
                 Serial.println("已经有一个取药任务了");
             }
         }
-        if (message == 'j') {//关盖
+        if (message == 'j') {  //关盖
             if (!isTaskTake) {
                 isTaskTake = true;
                 taskCloseBox(NULL);
@@ -64,16 +64,18 @@ void loop() {
                 Serial.println("已经有一个取药任务了");
             }
         }
-        if (message == 'm') {//关盖
+        if (message == 'm') {  //关盖
             if (!isTaskTake) {
                 isTaskTake = true;
+                digitalWrite(PIN_ENABLE, LOW);
                 takePillsTest();
+                digitalWrite(PIN_ENABLE, HIGH);
                 isTaskTake = false;
             } else {
                 Serial.println("已经有一个取药任务了");
             }
         }
-        if (message == 'g') {//左旋
+        if (message == 'g') {  //左旋
             if (!isTaskTake) {
                 isTaskTake = true;
                 digitalWrite(PIN_ENABLE, LOW);
@@ -85,7 +87,7 @@ void loop() {
                 Serial.println("已经有一个取药任务了");
             }
         }
-        if (message == 'h') {//右旋
+        if (message == 'h') {  //右旋
             if (!isTaskTake) {
                 isTaskTake = true;
                 digitalWrite(PIN_ENABLE, LOW);
@@ -115,10 +117,10 @@ void loop() {
         if (message == '3') {
             taskPillsOut(NULL);
         }
-        if (message == 'a') {//开气泵
+        if (message == 'a') {  //开气泵
             openPump();
         }
-        if (message == 'b') {//关气泵
+        if (message == 'b') {  //关气泵
             closePump();
         }
     }
@@ -237,32 +239,36 @@ void takePills(int boxName, int pillsNumber) {
     // stepper2.runToNewPosition(6400);
     delay(1000);
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for (int i = 0; i < 400; i++) {
-        digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(200);
-        digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(200);
+    for (int j = 0; j <= 5; j++) {
+        for (int i = 0; i < 500; i++) {
+            digitalWrite(PIN_STEPPER2_STEP, HIGH);
+            delayMicroseconds(400);
+            digitalWrite(PIN_STEPPER2_STEP, LOW);
+            delayMicroseconds(400);
+        }
+        delay(500);
+        digitalWrite(PIN_STEPPER2_DIR, HIGH);
+        for (int k = 0; k < 500; k++) {
+            digitalWrite(PIN_STEPPER2_STEP, HIGH);
+            delayMicroseconds(400);
+            digitalWrite(PIN_STEPPER2_STEP, LOW);
+            delayMicroseconds(400);
+        }
+        digitalWrite(PIN_STEPPER2_DIR, LOW);
     }
-    delay(500);
-    digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for (int i = 0; i < 400; i++) {
-        digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(400);
-        digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(400);
-    }
-#ifdef DEBUG
-    Serial.println("吸到啦！");
-#endif
     // stepper2.setMaxSpeed(2500);
     // stepper2.setAcceleration(1500);
     // stepper2.runToNewPosition(-20000);
     leftToMid();
     taskMidToRight(NULL);
     closePump();
-    delay(5000);
-    // xTaskCreate(taskRightToMid, "taskRightToMid", 1000, NULL, 1, NULL);
+    openAir();
+    delay(3000);
+    closeAir();
+    delay(2000);
     taskPillsOut(NULL);
+    taskRightToMid(NULL);
+    // xTaskCreate(taskRightToMid, "taskRightToMid", 1000, NULL, 1, NULL);
     isTaskTake = false;
     digitalWrite(PIN_ENABLE, HIGH);
 }
@@ -283,23 +289,31 @@ void takePillsTest() {
     // stepper2.runToNewPosition(6400);
     delay(1000);
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for (int i = 0; i < 400; i++) {
-        digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(200);
-        digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(200);
-    }
-    delay(500);
-    digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for (int i = 0; i < 400; i++) {
-        digitalWrite(PIN_STEPPER2_STEP, HIGH);
-        delayMicroseconds(400);
-        digitalWrite(PIN_STEPPER2_STEP, LOW);
-        delayMicroseconds(400);
+    for (int j = 0; j <= 5; j++) {
+        for (int i = 0; i < 500; i++) {
+            digitalWrite(PIN_STEPPER2_STEP, HIGH);
+            delayMicroseconds(400);
+            digitalWrite(PIN_STEPPER2_STEP, LOW);
+            delayMicroseconds(400);
+        }
+        delay(500);
+        digitalWrite(PIN_STEPPER2_DIR, HIGH);
+        for (int k = 0; k < 500; k++) {
+            digitalWrite(PIN_STEPPER2_STEP, HIGH);
+            delayMicroseconds(400);
+            digitalWrite(PIN_STEPPER2_STEP, LOW);
+            delayMicroseconds(400);
+        }
+        digitalWrite(PIN_STEPPER2_DIR, LOW);
     }
     // stepper2.setMaxSpeed(2500);
     // stepper2.setAcceleration(1500);
     // stepper2.runToNewPosition(-20000);
     leftToMid();
+    taskMidToRight(NULL);
     closePump();
+    openAir();
+    delay(3000);
+    closeAir();
+    taskRightToMid(NULL);
 }

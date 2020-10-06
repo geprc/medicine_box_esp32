@@ -17,6 +17,7 @@ void motor_init(void) {
     pinMode(PIN_CLICK, INPUT_PULLUP);
     digitalWrite(PIN_PUMP, LOW);  //拉高关闭气泵电机
     // TODO 步进电机使能
+    digitalWrite(PIN_AIR, LOW);
     digitalWrite(PIN_ENABLE, LOW);
     servo1.attach(PIN_SERVO1);
     servo2.attach(PIN_SERVO2);
@@ -61,11 +62,19 @@ void stepper2Return() {
     }
     Serial.println("已归位");
 }
+void openAir() {
+    digitalWrite(PIN_AIR, HIGH);
+    Serial.println("开空气");
+}
+void closeAir() {
+    digitalWrite(PIN_AIR, LOW);
+    Serial.println("闭空气");
+}
 void midToLeft() {
     //TODO
     Serial.println("中到左...");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for(int i=0; i<=4500; i++) {
+    for(int i=0; i<=4200; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delay(2);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -76,7 +85,7 @@ void leftToMid() {
     //TODO
     Serial.println("左到中...");
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for(int i=0; i<=4500; i++) {
+    for(int i=0; i<=4200; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -87,7 +96,7 @@ void taskMidToRight(void *pvParameters) {
     //TODO
     Serial.println("中到右...");
     digitalWrite(PIN_STEPPER2_DIR, LOW);
-    for(int i=0; i<=22000; i++) {
+    for(int i=0; i<=20000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
@@ -98,13 +107,12 @@ void taskRightToMid(void *pvParameters) {
     //TODO
     Serial.println("右到中...");
     digitalWrite(PIN_STEPPER2_DIR, HIGH);
-    for(int i=0; i<=22000; i++) {
+    for(int i=0; i<=20000; i++) {
         digitalWrite(PIN_STEPPER2_STEP, HIGH);
         delayMicroseconds(200);
         digitalWrite(PIN_STEPPER2_STEP, LOW);
         delayMicroseconds(200);
     }
-    vTaskDelete(NULL);
 }
 
 void taskRotate(int direction) {
